@@ -7,7 +7,7 @@ const isAdminRole = async (req, res, next) => {
     });
   }
 
-  const { rol, nombre } = req.usuarioAuth;
+  const { rol } = req.usuarioAuth;
 
   if (rol !== "ADMIN_ROL") {
     return res.status(401).json({ msg: "El usuario no tiene permisos " });

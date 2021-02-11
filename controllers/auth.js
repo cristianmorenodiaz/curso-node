@@ -3,6 +3,7 @@ const bcryptjs = require("bcryptjs");
 
 const Usuario = require("../models/usuario");
 const { generarJWT } = require("../helpers/generarJWT");
+const { verificagoogle } = require("../helpers/google-verify");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -33,6 +34,39 @@ const login = async (req, res) => {
   }
 };
 
+const signInGoogle = async (req, res) => {
+  try {
+    const { id_token } = req.body;
+    const { email, nombre, img } = await verificagoogle(id_token);
+
+    let usuario = await Usuario.findOne({ email });
+
+    if (!usuario) {
+      const data = {
+        email,
+        nombre,
+        img,
+        password: ":P",
+        google: true,
+        rol: "USER_ROL",
+      };
+
+      usuario = new Usuario(data);
+      usuario.save();
+    }
+
+    if (!usuario.estado) {
+      return res.status(401).json({ msg: "Usuario bloqeuado" });
+    }
+
+    const token = await generarJWT(usuario.id);
+    res.json({ usuario, token });
+  } catch (error) {
+    res.json({ msg: "Token no valido" });
+  }
+};
+
 module.exports = {
   login,
+  signInGoogle,
 };

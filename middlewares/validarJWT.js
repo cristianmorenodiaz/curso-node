@@ -13,9 +13,9 @@ const validarrutaJWT = async (req = request, res = response, next) => {
     const usuario = await Usuario.findById(uid);
 
     if (!usuario) {
-      res
+      return res
         .status(404)
-        .json({ msg: "Usuario no tiene permitido hacer cambios " });
+        .json({ msg: "Usuario no tiene permitido hacer cambios s" });
     }
 
     if (!usuario.estado) {

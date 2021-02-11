@@ -62,7 +62,7 @@ const signInGoogle = async (req, res) => {
     const token = await generarJWT(usuario.id);
     res.json({ usuario, token });
   } catch (error) {
-    res.json({ msg: "Token no valido" });
+    res.json({ error });
   }
 };
 
